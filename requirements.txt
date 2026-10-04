@@ -1,0 +1,2 @@
+# No additional required dependencies: ComfyUI supplies torch, numpy and Pillow.
+# Optional local OCR: install requirements-ocr.txt in ComfyUI's Python environment.

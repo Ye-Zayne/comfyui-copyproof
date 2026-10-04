@@ -1,0 +1,37 @@
+{
+  "fields": [
+    {
+      "id": "brand",
+      "text": "ACME",
+      "kind": "brand",
+      "bbox": [
+        35,
+        35,
+        250,
+        108
+      ]
+    },
+    {
+      "id": "headline",
+      "text": "LIMITED OFFER",
+      "kind": "text",
+      "bbox": [
+        35,
+        130,
+        590,
+        197
+      ]
+    },
+    {
+      "id": "price",
+      "text": "$199",
+      "kind": "price",
+      "bbox": [
+        35,
+        214,
+        430,
+        300
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "copyproof_demo.png"
+    }
+  },
+  "2": {
+    "class_type": "CopyProofValidate",
+    "inputs": {
+      "images": [
+        "1",
+        0
+      ],
+      "ocr_json": "{\"width\": 640, \"height\": 360, \"detections\": [{\"id\": \"d0\", \"text\": \"ACME\", \"confidence\": 0.99, \"bbox\": [42, 46, 170, 90]}, {\"id\": \"d1\", \"text\": \"LIMITED OFFER\", \"confidence\": 0.99, \"bbox\": [42, 139, 365, 182]}, {\"id\": \"d2\", \"text\": \"$1999\", \"confidence\": 0.99, \"bbox\": [42, 227, 235, 286]}]}",
+      "expected_json": "{\"fields\": [{\"id\": \"brand\", \"text\": \"ACME\", \"kind\": \"brand\", \"bbox\": [35, 35, 250, 108]}, {\"id\": \"headline\", \"text\": \"LIMITED OFFER\", \"kind\": \"text\", \"bbox\": [35, 130, 590, 197]}, {\"id\": \"price\", \"text\": \"$199\", \"kind\": \"price\", \"bbox\": [35, 214, 430, 300]}]}",
+      "min_confidence": 0.75,
+      "match_threshold": 0.55,
+      "ignore_whitespace": true,
+      "ignore_punctuation": false,
+      "ignore_case": false,
+      "missing_policy": "review",
+      "unexpected_policy": "review",
+      "mask_padding": 0
+    }
+  },
+  "3": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "2",
+        1
+      ],
+      "filename_prefix": "CopyProof/overlay"
+    }
+  },
+  "4": {
+    "class_type": "MaskToImage",
+    "inputs": {
+      "mask": [
+        "2",
+        0
+      ]
+    }
+  },
+  "5": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "4",
+        0
+      ],
+      "filename_prefix": "CopyProof/error_mask"
+    }
+  }
+}

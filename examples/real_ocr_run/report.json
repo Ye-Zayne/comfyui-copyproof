@@ -1,0 +1,221 @@
+{
+  "schema_version": "1.0",
+  "package_version": "0.1.0",
+  "verdict": "FAIL",
+  "verdict_code": 0,
+  "verdict_codes": {
+    "FAIL": 0,
+    "REVIEW": 1,
+    "PASS": 2
+  },
+  "policy": {
+    "min_confidence": 0.75,
+    "match_threshold": 0.55,
+    "ignore_whitespace": true,
+    "ignore_punctuation": false,
+    "ignore_case": false,
+    "missing_policy": "review",
+    "unexpected_policy": "review"
+  },
+  "images": [
+    {
+      "verdict": "FAIL",
+      "verdict_code": 0,
+      "fields": [
+        {
+          "id": "brand",
+          "kind": "brand",
+          "expected": "ACME",
+          "observed": "ACME",
+          "status": "PASS",
+          "reason": "matched",
+          "confidence": 0.99988,
+          "similarity": 1.0,
+          "missing": false,
+          "detection_ids": [
+            "b0_d0"
+          ],
+          "expected_bbox": [
+            35.0,
+            35.0,
+            250.0,
+            108.0
+          ],
+          "located": true,
+          "location_source": "ocr_region",
+          "changes": [],
+          "numeric_expected": [],
+          "numeric_observed": []
+        },
+        {
+          "id": "headline",
+          "kind": "text",
+          "expected": "LIMITED OFFER",
+          "observed": "LIMITED OFFER",
+          "status": "PASS",
+          "reason": "matched",
+          "confidence": 0.99975,
+          "similarity": 1.0,
+          "missing": false,
+          "detection_ids": [
+            "b0_d1"
+          ],
+          "expected_bbox": [
+            35.0,
+            130.0,
+            590.0,
+            197.0
+          ],
+          "located": true,
+          "location_source": "ocr_region",
+          "changes": [],
+          "numeric_expected": [],
+          "numeric_observed": []
+        },
+        {
+          "id": "price",
+          "kind": "price",
+          "expected": "$199",
+          "observed": "$1999",
+          "status": "FAIL",
+          "reason": "text_mismatch",
+          "confidence": 0.99978,
+          "similarity": 0.8888888888888888,
+          "missing": false,
+          "detection_ids": [
+            "b0_d2"
+          ],
+          "expected_bbox": [
+            35.0,
+            214.0,
+            430.0,
+            300.0
+          ],
+          "located": true,
+          "location_source": "ocr_region",
+          "changes": [
+            {
+              "operation": "insert",
+              "expected_span": [
+                4,
+                4
+              ],
+              "observed_span": [
+                4,
+                5
+              ],
+              "expected": "",
+              "observed": "9"
+            }
+          ],
+          "numeric_expected": [
+            "199"
+          ],
+          "numeric_observed": [
+            "1999"
+          ]
+        }
+      ],
+      "unexpected": [],
+      "regions": [
+        {
+          "status": "PASS",
+          "field_id": "brand",
+          "bbox": [
+            37.0,
+            49.0,
+            165.0,
+            90.0
+          ],
+          "polygon": [
+            [
+              37.0,
+              49.0
+            ],
+            [
+              165.0,
+              49.0
+            ],
+            [
+              165.0,
+              90.0
+            ],
+            [
+              37.0,
+              90.0
+            ]
+          ],
+          "source": "ocr_region"
+        },
+        {
+          "status": "PASS",
+          "field_id": "headline",
+          "bbox": [
+            40.0,
+            142.0,
+            335.0,
+            178.0
+          ],
+          "polygon": [
+            [
+              40.0,
+              142.0
+            ],
+            [
+              335.0,
+              142.0
+            ],
+            [
+              335.0,
+              178.0
+            ],
+            [
+              40.0,
+              178.0
+            ]
+          ],
+          "source": "ocr_region"
+        },
+        {
+          "status": "FAIL",
+          "field_id": "price",
+          "bbox": [
+            36.0,
+            230.0,
+            202.0,
+            288.0
+          ],
+          "polygon": [
+            [
+              36.0,
+              230.0
+            ],
+            [
+              202.0,
+              230.0
+            ],
+            [
+              202.0,
+              288.0
+            ],
+            [
+              36.0,
+              288.0
+            ]
+          ],
+          "source": "ocr_region"
+        }
+      ],
+      "batch_index": 0,
+      "width": 640,
+      "height": 360
+    }
+  ],
+  "notes": [
+    "Character diff offsets refer to strings, not image pixels.",
+    "A missing OCR detection is not proof that text is absent; default missing policy is REVIEW.",
+    "Error masks cover detected text regions or supplied expected bboxes, never inferred individual glyphs."
+  ],
+  "mask_padding": 0,
+  "mask_semantics": "1 selects FAIL or REVIEW regions. PASS and unlocated missing text remain 0."
+}

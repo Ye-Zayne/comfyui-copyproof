@@ -1,0 +1,71 @@
+{
+  "1": {
+    "class_type": "LoadImage",
+    "inputs": {
+      "image": "copyproof_demo.png"
+    }
+  },
+  "2": {
+    "class_type": "CopyProofRapidOCR",
+    "inputs": {
+      "images": [
+        "1",
+        0
+      ],
+      "accelerator": "cpu",
+      "capture_confidence": 0.05,
+      "model_root": ""
+    }
+  },
+  "3": {
+    "class_type": "CopyProofValidate",
+    "inputs": {
+      "images": [
+        "1",
+        0
+      ],
+      "ocr_json": [
+        "2",
+        0
+      ],
+      "expected_json": "{\"fields\": [{\"id\": \"brand\", \"text\": \"ACME\", \"kind\": \"brand\", \"bbox\": [35, 35, 250, 108]}, {\"id\": \"headline\", \"text\": \"LIMITED OFFER\", \"kind\": \"text\", \"bbox\": [35, 130, 590, 197]}, {\"id\": \"price\", \"text\": \"$199\", \"kind\": \"price\", \"bbox\": [35, 214, 430, 300]}]}",
+      "min_confidence": 0.75,
+      "match_threshold": 0.55,
+      "ignore_whitespace": true,
+      "ignore_punctuation": false,
+      "ignore_case": false,
+      "missing_policy": "review",
+      "unexpected_policy": "review",
+      "mask_padding": 0
+    }
+  },
+  "4": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "3",
+        1
+      ],
+      "filename_prefix": "CopyProof/local_ocr_overlay"
+    }
+  },
+  "5": {
+    "class_type": "MaskToImage",
+    "inputs": {
+      "mask": [
+        "3",
+        0
+      ]
+    }
+  },
+  "6": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "images": [
+        "5",
+        0
+      ],
+      "filename_prefix": "CopyProof/local_ocr_error_mask"
+    }
+  }
+}

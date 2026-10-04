@@ -1,0 +1,39 @@
+{
+  "width": 640,
+  "height": 360,
+  "detections": [
+    {
+      "id": "d0",
+      "text": "ACME",
+      "confidence": 0.99,
+      "bbox": [
+        42,
+        46,
+        170,
+        90
+      ]
+    },
+    {
+      "id": "d1",
+      "text": "LIMITED OFFER",
+      "confidence": 0.99,
+      "bbox": [
+        42,
+        139,
+        365,
+        182
+      ]
+    },
+    {
+      "id": "d2",
+      "text": "$1999",
+      "confidence": 0.99,
+      "bbox": [
+        42,
+        227,
+        235,
+        286
+      ]
+    }
+  ]
+}
