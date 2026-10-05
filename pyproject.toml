@@ -13,7 +13,7 @@ Repository = "https://github.com/Ye-Zayne/comfyui-copyproof"
 "Bug Tracker" = "https://github.com/Ye-Zayne/comfyui-copyproof/issues"
 
 [tool.comfy]
-PublisherId = "jinny-wj"
+PublisherId = "ye-zayne"
 DisplayName = "CopyProof"
 
 [tool.pytest.ini_options]
