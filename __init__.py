@@ -9,6 +9,6 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "CopyProofRapidOCR": "CopyProof · Local OCR (中英)",
     "CopyProofValidate": "CopyProof · Validate Expected Copy",
 }
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = ["NODE_CLASS_MAPPINGS", "NODE_DISPLAY_NAME_MAPPINGS"]

@@ -1,7 +1,6 @@
 """ComfyUI V1 nodes. RapidOCR imports and model loading happen only on execution."""
 from __future__ import annotations
 
-import importlib
 import json
 import threading
 from pathlib import Path
@@ -69,7 +68,7 @@ def _model_directory(model_root: str) -> str:
         path = Path(model_root).expanduser().resolve()
     else:
         try:
-            folder_paths = importlib.import_module("folder_paths")
+            import folder_paths
         except ModuleNotFoundError:
             # Useful outside ComfyUI for a real OCR smoke test.
             path = Path(__file__).resolve().parent / "models" / "rapidocr"
@@ -83,27 +82,27 @@ def _engine(accelerator: str, model_root: str, capture_confidence: float) -> tup
     if accelerator not in {"cpu", "cuda"}:
         raise ValueError("accelerator must be cpu or cuda")
     try:
-        runtime = importlib.import_module("onnxruntime")
+        import onnxruntime
     except ModuleNotFoundError as exc:
         raise RuntimeError("Local OCR requires optional dependencies. In ComfyUI's Python run: python -m pip install -r requirements-ocr.txt. External JSON validation works without OCR packages.") from exc
-    if accelerator == "cuda" and "CUDAExecutionProvider" not in runtime.get_available_providers():
+    if accelerator == "cuda" and "CUDAExecutionProvider" not in onnxruntime.get_available_providers():
         raise RuntimeError("CUDAExecutionProvider is unavailable. Select cpu, or install a compatible onnxruntime-gpu in ComfyUI's Python environment.")
     root = _model_directory(model_root)
     key = (accelerator, root, capture_confidence)
     if key not in _ENGINES:
         try:
-            package = importlib.import_module("rapidocr")
+            import rapidocr
         except ModuleNotFoundError as exc:
             if exc.name != "rapidocr":
                 raise RuntimeError(f"RapidOCR dependency is missing: {exc.name}. Reinstall requirements-ocr.txt in ComfyUI's Python.") from exc
             try:
-                legacy = importlib.import_module("rapidocr_onnxruntime")
+                import rapidocr_onnxruntime
             except ModuleNotFoundError as legacy_exc:
                 raise RuntimeError("RapidOCR is not installed. In ComfyUI's Python run: python -m pip install -r requirements-ocr.txt. Or connect an external OCR JSON to CopyProof Validate Expected Copy.") from legacy_exc
-            engine = legacy.RapidOCR(text_score=capture_confidence, det_use_cuda=accelerator == "cuda", cls_use_cuda=accelerator == "cuda", rec_use_cuda=accelerator == "cuda")
+            engine = rapidocr_onnxruntime.RapidOCR(text_score=capture_confidence, det_use_cuda=accelerator == "cuda", cls_use_cuda=accelerator == "cuda", rec_use_cuda=accelerator == "cuda")
             _ENGINES[key] = (engine, "rapidocr_onnxruntime")
         else:
-            engine = package.RapidOCR(params={"Global.text_score": capture_confidence, "Global.model_root_dir": root, "EngineConfig.onnxruntime.use_cuda": accelerator == "cuda"})
+            engine = rapidocr.RapidOCR(params={"Global.text_score": capture_confidence, "Global.model_root_dir": root, "EngineConfig.onnxruntime.use_cuda": accelerator == "cuda"})
             _ENGINES[key] = (engine, "rapidocr")
     return _ENGINES[key]
 

@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+import sys
 
 import numpy as np
 import pytest
@@ -24,22 +25,57 @@ def test_incomplete_output_fails_instead_of_silent_pass():
 
 
 def test_missing_optional_dependency_has_actionable_error(monkeypatch):
-    original = nodes.importlib.import_module
-
-    def unavailable(name):
-        if name == "onnxruntime":
-            raise ModuleNotFoundError("No module named onnxruntime", name="onnxruntime")
-        return original(name)
-
-    monkeypatch.setattr(nodes.importlib, "import_module", unavailable)
+    monkeypatch.setitem(sys.modules, "onnxruntime", None)
     with pytest.raises(RuntimeError, match="requirements-ocr.txt"):
         nodes._engine("cpu", "", 0.05)
 
 
 def test_requesting_unavailable_cuda_does_not_silently_fallback(monkeypatch):
-    monkeypatch.setattr(nodes.importlib, "import_module", lambda name: SimpleNamespace(get_available_providers=lambda: ["CPUExecutionProvider"]))
+    monkeypatch.setitem(sys.modules, "onnxruntime", SimpleNamespace(get_available_providers=lambda: ["CPUExecutionProvider"]))
     with pytest.raises(RuntimeError, match="CUDAExecutionProvider"):
         nodes._engine("cuda", "", 0.05)
+
+
+def test_modern_rapidocr_engine_parameters_and_cache_are_preserved(monkeypatch, tmp_path):
+    calls = []
+    engine = object()
+
+    def create(**kwargs):
+        calls.append(kwargs)
+        return engine
+
+    monkeypatch.setattr(nodes, "_ENGINES", {})
+    monkeypatch.setitem(sys.modules, "onnxruntime", SimpleNamespace())
+    monkeypatch.setitem(sys.modules, "rapidocr", SimpleNamespace(RapidOCR=create))
+    first = nodes._engine("cpu", str(tmp_path), 0.05)
+    assert first == (engine, "rapidocr")
+    assert nodes._engine("cpu", str(tmp_path), 0.05) == first
+    assert calls == [{"params": {"Global.text_score": 0.05, "Global.model_root_dir": str(tmp_path), "EngineConfig.onnxruntime.use_cuda": False}}]
+
+
+def test_missing_modern_rapidocr_preserves_legacy_fallback(monkeypatch, tmp_path):
+    calls = []
+    engine = object()
+
+    def create(**kwargs):
+        calls.append(kwargs)
+        return engine
+
+    monkeypatch.setattr(nodes, "_ENGINES", {})
+    monkeypatch.setitem(sys.modules, "onnxruntime", SimpleNamespace())
+    monkeypatch.setitem(sys.modules, "rapidocr", None)
+    monkeypatch.setitem(sys.modules, "rapidocr_onnxruntime", SimpleNamespace(RapidOCR=create))
+    assert nodes._engine("cpu", str(tmp_path), 0.1) == (engine, "rapidocr_onnxruntime")
+    assert calls == [{"text_score": 0.1, "det_use_cuda": False, "cls_use_cuda": False, "rec_use_cuda": False}]
+
+
+def test_missing_both_rapidocr_packages_has_actionable_error(monkeypatch, tmp_path):
+    monkeypatch.setattr(nodes, "_ENGINES", {})
+    monkeypatch.setitem(sys.modules, "onnxruntime", SimpleNamespace())
+    monkeypatch.setitem(sys.modules, "rapidocr", None)
+    monkeypatch.setitem(sys.modules, "rapidocr_onnxruntime", None)
+    with pytest.raises(RuntimeError, match="requirements-ocr.txt"):
+        nodes._engine("cpu", str(tmp_path), 0.05)
 
 
 def test_node_converts_rgb_to_bgr_and_preserves_each_batch(monkeypatch):

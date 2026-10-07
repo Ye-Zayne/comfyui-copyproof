@@ -9,7 +9,7 @@ import unicodedata
 from dataclasses import dataclass
 from typing import Any
 
-VERSION = "0.1.0"
+VERSION = "0.1.1"
 VERDICT_CODES = {"FAIL": 0, "REVIEW": 1, "PASS": 2}
 
 
